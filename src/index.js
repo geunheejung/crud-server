@@ -1,9 +1,5 @@
-const express = require("express");
+const app = require("./express.js");
 const { signUp, login } = require("./routes/user.js");
-
-const app = express();
-
-app.use(express.json());
 
 app.set("port", process.env.PORT || 3000);
 
