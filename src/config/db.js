@@ -1,6 +1,6 @@
 module.exports = {
   host: "localhost",
   user: "root",
-  password: process.env.DB_PASSWORD,
+  password: "kym2233",
   database: "my_db",
 };

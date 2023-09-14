@@ -3,8 +3,9 @@ const jwt = require("jsonwebtoken");
 module.exports = {
   sign: (user) => {
     // access token 발급
+    console.log(user);
     const payload = {
-      id: user.user_id,
+      id: user.userId,
     };
 
     const accessToken = jwt.sign(payload, process.env.JWT_KEY, {
@@ -21,7 +22,7 @@ module.exports = {
       decoded = jwt.verify(token, process.env.JWT_KEY);
       return {
         ok: true,
-        id: decoded.user_id,
+        id: decoded.id,
       };
     } catch (error) {
       return {
