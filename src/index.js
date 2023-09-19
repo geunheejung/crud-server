@@ -1,11 +1,13 @@
 require("dotenv").config();
 
 const app = require("./express.js");
-const { signUp, login } = require("./routes/auth.js");
+const { signUp, login, refresh } = require("./routes/auth.js");
 const { getUser } = require("./routes/member.js");
 const { route } = require("./route.js");
 
 app.set("port", process.env.PORT || 3000);
+
+app.post(route.refresh, refresh);
 
 app.post(route.signup, signUp);
 

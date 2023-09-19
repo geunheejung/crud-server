@@ -8,7 +8,6 @@ const signUp = (req, res) => {
     `SELECT * FROM Users WHERE email = '${email}'`,
     (error, rows) => {
       if (error) {
-        console.log(error);
         return res.status(400).json({
           data: null,
           message: "다시 요청 해주세요.",
@@ -30,7 +29,6 @@ const signUp = (req, res) => {
         `INSERT INTO Users (email, password, name, role, createdDate, modifiedDate) values ('${email}', '${password}', '${name}', 'user', '${createdDate}', '${modifiedDate}')`,
         (error, rows) => {
           if (error || !rows) {
-            console.log(error, rows);
             return res.status(400).json({
               data: null,
               message: "다시 요청 해주세요.",
@@ -49,8 +47,6 @@ const signUp = (req, res) => {
 
 const login = (req, res) => {
   const { email, password } = req.body;
-
-  console.log(req.cookies);
 
   connection.query(
     `select * from Users where email = '${email}'`,
@@ -85,7 +81,27 @@ const login = (req, res) => {
   );
 };
 
+const refresh = (req, res) => {
+  // accessToken이 복호화가 되는지 체크한다.
+  // 새 accessToken을 발급해준다
+  const { cookies } = req;
+
+  if (!cookies || !cookies.accessToken)
+    return res.status(400).json({ message: "토큰이 없습니다." });
+
+  const { accessToken } = cookies;
+
+  const { ok, message, token } = jwt.refresh(accessToken);
+
+  if (!ok) {
+    return res.status(401).json({ message });
+  }
+
+  return res.status(200).json({ data: { accessToken: token } });
+};
+
 module.exports = {
   signUp,
   login,
+  refresh,
 };

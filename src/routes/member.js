@@ -18,7 +18,7 @@ const getUser = (req, res) => {
   if (!ok) {
     return res
       .status(401)
-      .json({ data: null, message: "인증이 만료 되었습니다." });
+      .json({ data: null, message: "인증이 만료 되었습니다.!!!" });
   }
 
   connection.query(

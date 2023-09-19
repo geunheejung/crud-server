@@ -1,10 +1,13 @@
+const jwt = require("../jwt");
+const { route } = require("../route.js");
+
 const tokenValidateMiddleware = (req, res, next) => {
   const {
     path,
     headers: { authorization },
   } = req;
 
-  const whiteList = ["/auth/login", "/auth/signup"];
+  const whiteList = [route.login, route.signup, route.refresh];
 
   if (whiteList.includes(path)) {
     next();
@@ -21,7 +24,7 @@ const tokenValidateMiddleware = (req, res, next) => {
 
   if (!ok) {
     return res
-      .status(400)
+      .status(401)
       .json({ data: null, message: "인증이 만료 되었습니다." });
   }
 
