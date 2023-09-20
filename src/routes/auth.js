@@ -71,8 +71,6 @@ const login = (req, res) => {
 
           const [user] = rows;
 
-          console.log("user ->", user);
-
           const accessToken = jwt.sign(user.userId); // accessToken 발급
           const refreshToken = jwt.refreshTokenSign(user.userId); // refreshToken 발급
 

@@ -121,6 +121,11 @@ const refreshVerify = async (token, refreshToken) => {
       token: newAccessToken,
     };
   }
+
+  return {
+    ok: true,
+    token,
+  };
 };
 
 module.exports = {
