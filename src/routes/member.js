@@ -3,22 +3,18 @@ const jwt = require("../jwt");
 
 // 사용자 정보 조회
 const getUser = (req, res) => {
-  const {
-    headers: { authorization },
-  } = req;
+  const accessToken = jwt.parsingToken(req);
 
-  if (!authorization) {
+  if (!accessToken) {
     return res.status(401).json({ data: null, message: "권한이 없습니다." });
   }
 
-  const [, token] = authorization.split(" ");
-
-  const { id, ok } = jwt.verify(token);
+  const { id, ok } = jwt.verify(accessToken);
 
   if (!ok) {
     return res
       .status(401)
-      .json({ data: null, message: "인증이 만료 되었습니다.!!!" });
+      .json({ data: null, message: "인증이 만료 되었습니다" });
   }
 
   connection.query(

@@ -4,10 +4,20 @@ const app = require("./express.js");
 const { signUp, login, refresh } = require("./routes/auth.js");
 const { getUser } = require("./routes/member.js");
 const { route } = require("./route.js");
+const redis = require("./redis.js");
+const redisClient = require("./redis.js");
+
+redis.on("connect", () => {
+  console.info("Redis connected!");
+});
+redis.on("error", (err) => {
+  console.error("Redis Client Error", err);
+});
+redisClient.connect().then();
 
 app.set("port", process.env.PORT || 3000);
 
-app.post(route.refresh, refresh);
+app.get(route.refresh, refresh);
 
 app.post(route.signup, signUp);
 

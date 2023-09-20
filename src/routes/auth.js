@@ -1,6 +1,7 @@
 const moment = require("moment");
 const jwt = require("../jwt.js");
 const connection = require("../connection.js");
+const redisClient = require("../redis.js");
 
 const signUp = (req, res) => {
   const { email, password, name, agree } = req.body;
@@ -70,10 +71,15 @@ const login = (req, res) => {
 
           const [user] = rows;
 
-          const accessToken = jwt.sign(user); // accessToken 발급
+          console.log("user ->", user);
+
+          const accessToken = jwt.sign(user.userId); // accessToken 발급
+          const refreshToken = jwt.refreshTokenSign(user.userId); // refreshToken 발급
+
+          redisClient.set(user.userId, refreshToken);
 
           res.status(200).send({
-            data: { accessToken },
+            data: { accessToken, refreshToken },
           });
         }
       );
@@ -81,17 +87,17 @@ const login = (req, res) => {
   );
 };
 
-const refresh = (req, res) => {
-  // accessToken이 복호화가 되는지 체크한다.
-  // 새 accessToken을 발급해준다
+const refresh = async (req, res) => {
   const { cookies } = req;
 
-  if (!cookies || !cookies.accessToken)
-    return res.status(400).json({ message: "토큰이 없습니다." });
+  if (!cookies) return res.status(401).json({ message: "토큰이 없습니다." });
 
-  const { accessToken } = cookies;
+  const { accessToken, refreshToken } = cookies;
 
-  const { ok, message, token } = jwt.refresh(accessToken);
+  const { ok, message, token } = await jwt.refreshVerify(
+    accessToken,
+    refreshToken
+  );
 
   if (!ok) {
     return res.status(401).json({ message });

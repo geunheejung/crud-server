@@ -5,15 +5,13 @@ const jwt = require("./jwt");
 const tokenValidateMiddleware = require("./middleware/token");
 
 const app = express();
-
-app.use(express.json());
-app.use(
+app.use([
   cors({
     origin: "http://localhost:8080",
     credentials: true,
-  })
-);
-app.use(cookieParser());
-app.use(tokenValidateMiddleware);
-
+  }),
+  express.json(),
+  cookieParser(),
+  tokenValidateMiddleware,
+]);
 module.exports = app;

@@ -2,10 +2,7 @@ const jwt = require("../jwt");
 const { route } = require("../route.js");
 
 const tokenValidateMiddleware = (req, res, next) => {
-  const {
-    path,
-    headers: { authorization },
-  } = req;
+  const { path } = req;
 
   const whiteList = [route.login, route.signup, route.refresh];
 
@@ -14,13 +11,13 @@ const tokenValidateMiddleware = (req, res, next) => {
     return;
   }
 
-  if (!authorization) {
+  const token = jwt.parsingToken(req);
+
+  if (!token) {
     return res.status(401).json({ data: null, message: "권한이 없습니다." });
   }
 
-  const [, token] = authorization.split(" ");
-
-  const { id, ok } = jwt.verify(token);
+  const { ok } = jwt.verify(token);
 
   if (!ok) {
     return res
